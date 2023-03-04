@@ -1,0 +1,11 @@
+{
+  "hash": "798c3958549d02faa0fce1069fbca8b0",
+  "result": {
+    "markdown": "---\ntitle: \"Test New Post\"\nauthor: \"Windaru\"\ndate: \"2023-03-02\"\ncategories: [news]\n---\n\nThis is the first post in a Quarto blog. Welcome!\n\n![](thumbnail.jpg)\n\nSince this post doesn't specify an explicit `image`, the first image in the post will be used in the listing page of posts.\n\n# Latihan\n\n::: {.cell execution_count=1}\n``` {.python .cell-code}\nimport pandas as pd\nimport numpy as np\n```\n:::\n\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}
