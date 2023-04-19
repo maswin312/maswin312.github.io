@@ -1,31 +1,24 @@
 [
   {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
-    "section": "",
-    "text": "This is a post with executable code."
-  },
-  {
     "objectID": "posts/New-post-test/index.html",
     "href": "posts/New-post-test/index.html",
-    "title": "Test New Post",
+    "title": "Bandung House Pricing",
     "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts.\n\nLatihan\n\n\nCode\nimport pandas as pd\nimport numpy as np"
+    "text": "Photo by Neermana Studio on Unsplash"
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts.\n\nLatihan\n\n\nCode\nimport pandas as pd\nimport numpy as np"
+    "objectID": "posts/New-post-test/index.html#who-is-this-for",
+    "href": "posts/New-post-test/index.html#who-is-this-for",
+    "title": "Bandung House Pricing",
+    "section": "Who is this for?",
+    "text": "Who is this for?\nWarga atau agen perumahan yang memerlukan referensi untuk menentukan harga rumah yang akan dijual"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Windaru",
     "section": "",
-    "text": "Test New Post\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nMar 2, 2023\n\n\nWindaru\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nFeb 27, 2023\n\n\nWindaru\n\n\n\n\n\n\n  \n\n\n\n\nPost With Code\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nFeb 1, 2023\n\n\nWindaru\n\n\n\n\n\n\nNo matching items"
+    "text": "Bandung House Pricing\n\n\n\n\n\n\n\ncode\n\n\nanalysis\n\n\npython\n\n\n\n\nPredicting house price in Bandung\n\n\n\n\n\n\nApr 16, 2023\n\n\nWindaru\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",
