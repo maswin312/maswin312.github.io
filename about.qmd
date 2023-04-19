@@ -1,12 +1,12 @@
 ---
 title: "About"
-image: profile.jpg
+image: profile1.jpg
 about:
-  template: jolla
+  template: marquee
   links:
-    - icon: twitter
-      text: Twitter
-      href: https://twitter.com
+    - icon: envelope
+      text: windaru.0303@gmail.com
+      href: mailto:windaru.0303@gmail.com
     - icon: linkedin
       text: LinkedIn
       href: https://www.linkedin.com/in/windaruw/
@@ -16,4 +16,10 @@ about:
 
 ---
 
-About this blog
+Hi I'm Windaru, as a data analyst with 3 years of experience, I have a passion for turning raw data into insights that drive business decisions. I excel in R, Python, SQL, and Tableau, using these tools to transform complex data sets into visualizations that are accessible and understandable for stakeholders.
+
+In my previous role as a data analyst, I was responsible for developing and maintaining automated reports and dashboards, analyzing data to identify trends and patterns, and presenting insights to senior leadership. Through this work, I gained expertise in data wrangling and data visualization.
+
+I am a highly collaborative team player who thrives in fast-paced environments. I am always eager to learn and stay up-to-date with the latest technologies and best practices in data analysis.
+
+If you're looking for a data analyst who can deliver actionable insights that drive business growth, let's connect!

@@ -8,12 +8,12 @@ website:
     right:
       - about.qmd
       - icon: github
-        href: https://github.com/
-      - icon: twitter
-        href: https://twitter.com
+        href: https://github.com/maswin312
+      - icon: linkedin
+        href: https://www.linkedin.com/in/windaruw/
 format:
   html:
-    theme: yeti
+    theme: slate
     css: styles.css
     code-fold: true
 
