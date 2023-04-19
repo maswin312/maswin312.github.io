@@ -13,5 +13,11 @@
   },
   "posts/New-post-test/index.qmd": {
     "index.html": "f793a83b"
+  },
+  "posts/New-post-test/bandung_house_pricing.qmd": {
+    "bandung_house_pricing.html": "5596acf0"
+  },
+  "posts/New-post-test/index11.qmd": {
+    "index11.html": "7dee641e"
   }
 }

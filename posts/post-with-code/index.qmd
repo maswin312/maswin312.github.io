@@ -4,6 +4,7 @@ author: "Windaru"
 date: "2023-02-01"
 categories: [news, code, analysis]
 image: "image.jpg"
+draft: True
 ---
 
 This is a post with executable code.

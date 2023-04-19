@@ -1,20 +1,273 @@
 ---
-title: "Test New Post"
+jupyter: python3
+title: "Bandung House Pricing"
+description: "Predicting house price in Bandung"
 author: "Windaru"
-date: "2023-03-02"
-categories: [news]
+date: "2023-04-16"
+categories: [code, analysis, python]
 ---
 
-This is the first post in a Quarto blog. Welcome!
 
-![](thumbnail.jpg)
+Photo by <a href="https://unsplash.com/@neermana?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Neermana Studio</a> on <a href="https://unsplash.com/photos/SYKYxuT2o5w?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
 
-Since this post doesn't specify an explicit `image`, the first image in the post will be used in the listing page of posts.
+![](thumbnail.jpg)  
 
-# Latihan
 
 ```{python}
 import pandas as pd
+from sklearn.datasets import make_regression
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
+from sklearn.compose import ColumnTransformer
+```
+
+```{python}
+pd.set_option('display.max_colwidth', 255)
+```
+
+# BACKGROUND
+
+
+Machine learning project ini digunakan untuk memprediksi harga rumah yang dijual di kota bandung dan sekitarnya, data yang digunakan di scrape dari web OLX indonesia, project ini bertujuan untuk memperkirakan harga rumah yang dijual berdasarkan beberapa kriteria yang dimasukkan oleh penjual rumah di web OLX
+
+## Who is this for?
+
+Warga atau agen perumahan yang memerlukan referensi untuk menentukan harga rumah yang akan dijual
+
+# Dataset
+
+Dataset yang digunakan adalah hasil scrape menggunakan selenium + python, script python untuk scraping dapat ditemukan disini :  https://github.com/maswin312/selenium_srape_olx/blob/main/Scraping%20OLX.ipynb
+Hasil scrape disimpan di drive untuk memudahkan proses 
+
+# Data Cleaning
+
+```{python}
+bandung = pd.read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vTAR6OtAl_QcmB5_YkJ6M_YTifhCd5Z1gJtoXFJoaPJWcL5fh5n2DnHRIanJBMOOLF5WRjprZXQP-c7/pub?gid=853666521&single=true&output=csv')
+bandung
+```
+
+```{python}
+import matplotlib.pyplot as plt
+
+for column in bandung.select_dtypes(exclude=['object']):
+        plt.figure(figsize=(17,1))
+        sns.boxplot(data=bandung, x=column)
+```
+
+Data harga memiliki beberapa outlier, berupa harga rumah yang terlalu tinggi, atau luas tanah yang lerlalu luas, kita akan singkirkan data - data tersebut,
+selanjutnya kita akan mengecek jumlah data yang kita miliki per kecamatan
+
+```{python}
+bandung.groupby(["Kecamatan"])["price"].agg("count").reset_index().sort_values(
+    "price",
+    ascending=False,
+)
+```
+
+Beberapa daerah hanya memiliki beberapa listing/data, karena terlalu sedikit, kita hanya akan gunakan daerah yang memiliki listing/data lebih dari 10 listing/data
+
+```{python}
+#remove floor = 0, land and price too big
+
+bandung_clean =  bandung[bandung['floor'] > 0]
+bandung_clean = bandung_clean[bandung_clean['sqr_land'] < 10000 ]
+bandung_clean = bandung_clean[bandung_clean['price'] < 3000000000 ]
+bandung_clean['price'] = bandung_clean['price']/1000000
+bandung_clean.head()
+```
+
+```{python}
+for column in bandung_clean.select_dtypes(exclude=['object']):
+        plt.figure(figsize=(17,1))
+        sns.boxplot(data=bandung_clean, x=column)
+```
+
+```{python}
+#remove kecamatan with listing < 10
+
+bandung_clean_agg = bandung_clean.groupby(["Kecamatan"])["price"].agg("count").reset_index().sort_values(
+    "price",
+    ascending=False,
+)
+kecamatans = bandung_clean_agg[bandung_clean_agg['price']>= 10]['Kecamatan']
+bandung_clean_kec = bandung_clean[bandung_clean['Kecamatan'].isin(kecamatans)]
+bandung_clean_kec.head()
 
 ```
+
+```{python}
+bandung_clean_agg[bandung_clean_agg['Kecamatan'].isin(kecamatans)]
+```
+
+```{python}
+plt.figure(figsize=(15, 8))
+sns.boxplot(
+    data=bandung_clean_kec,
+    x="price",
+    y="Kecamatan",
+)
+
+plt.show()
+```
+
+Persebaran harga ditiap tiap kecamata, kecamatan buahbatu memiliki outlier yang paling bangyak dibandingkan dengan kecamatan lain, namun karena kecamatan tersebut memiliki data yang paling besar, maka kita akan tetap gunakan kecamatan tersebut
+
+```{python}
+bandung_clean_kec = bandung_clean_kec.drop(["link", "facility", 'Kabupaten', 'Provinsi'], axis=1)
+```
+
+```{python}
+plt.figure(figsize= (15, 8))
+sns.heatmap(bandung_clean_kec.corr(numeric_only= True), annot= True)
+plt.show()
+```
+
+Menggunakan heatmap untuk melihat korelasi antar column, dapat dilihat luas bangunan memiliki korelasi yang paling kuat dengan harga, dan jumlah kamar memiliki korelasi yang paling rendah
+
+```{python}
+#ubah kecamatan menjadi kategori
+for col in ['certificate', 'Kecamatan']:
+    bandung_clean_kec[col] = bandung_clean_kec[col].astype('category')
+```
+
+```{python}
+bandung_clean_kec.dtypes
+```
+
+```{python}
+sns.pairplot(
+    bandung_clean_kec,
+)
+# to show
+plt.show()
+```
+
+Melihat hasil pairplot pada price dan luas bangunan dan luas tanah. model regressi mungkin bisa kita gunakan
+
+```{python}
+plt.figure(figsize=(15, 8))
+sns.boxplot(
+    data=bandung_clean_kec,
+    x="price",
+    y="certificate",
+)
+
+plt.show()
+```
+
+mayoritas rumah yang dijual memiliki sertifikat SHM
+
+# Modeling
+
+```{python}
+#split data train - test
+def split_input_output(data, target_column):
+    X = data.drop(columns = [target_column])
+    y = data[target_column]
+
+    return X, y
+
+X, y = split_input_output(data = bandung_clean_kec,
+                          target_column = "price")
+```
+
+```{python}
+X_train, X_test, y_train, y_test = train_test_split(X,
+                                                    y,
+                                                    test_size = 0.2,
+                                                    random_state = 123)
+```
+
+```{python}
+X_train_clean = (
+    pd.get_dummies(X_train, prefix="")
+    .reset_index()
+    .drop(
+        ["index"],
+        axis=1,
+    )
+)
+X_train_clean
+```
+
+```{python}
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.model_selection import GridSearchCV 
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+
+params = {'n_estimators': [100, 200, 300, 400, 500],
+              'learning_rate': [0.1, 0.05, 0.01]}
+
+# Buat gridsearch
+grad_tree = GradientBoostingRegressor(random_state = 123)
+
+grad_tree_cv = GridSearchCV(estimator = grad_tree,
+                           param_grid = params,
+                           cv = 5,
+                           scoring = "neg_mean_absolute_error")
+# Fit grid search cv
+grad_tree_cv.fit(X_train_clean, y_train)
+
+# Best params
+grad_tree_cv.best_params_
+```
+
+```{python}
+grad_tree = GradientBoostingRegressor(n_estimators = 200,
+                                      learning_rate=0.1,
+                                      random_state = 123)
+
+grad_tree.fit(X_train_clean, y_train)
+```
+
+```{python}
+y_pred_train_gbcv = grad_tree.predict(X_train_clean)
+
+# Calculate mean absolute error
+mae_gb_cv = mean_absolute_error(y_train, y_pred_train_gbcv)
+
+# Calculate R-squared
+r2_gb_cv = r2_score(y_train, y_pred_train_gbcv)
+```
+
+```{python}
+print(f'Score : {r2_gb_cv} \n Mae :  {mae_gb_cv}')
+```
+
+```{python}
+sns.scatterplot(x=y_train, y=y_pred_train_gbcv)
+plt.show()
+```
+
+```{python}
+X_test_clean = (
+    pd.get_dummies(X_test, prefix="")
+    .reset_index()
+    .drop(
+        ["index"],
+        axis=1,
+    )
+)
+X_test_clean.head()
+```
+
+```{python}
+y_pred_test_gbcv = grad_tree.predict(X_test_clean)
+
+# Calculate mean absolute error
+test_mae_gb_cv = mean_absolute_error(y_test, y_pred_test_gbcv)
+
+# Calculate R-squared
+test_r2_gb_cv = r2_score(y_test, y_pred_test_gbcv)
+
+print(f'Score : {test_r2_gb_cv} \n Mae :  {test_mae_gb_cv}')
+```
+
+```{python}
+sns.scatterplot(x=y_test, y=y_pred_test_gbcv)
+plt.show()
+```
+

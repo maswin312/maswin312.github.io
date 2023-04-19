@@ -3,6 +3,7 @@ title: "Welcome To My Blog"
 author: "Windaru"
 date: "2023-02-27"
 categories: [news]
+draft: True
 ---
 
 This is the first post in a Quarto blog. Welcome!
@@ -17,4 +18,9 @@ Since this post doesn't specify an explicit `image`, the first image in the post
 import pandas as pd
 import numpy as np
 
+```
+
+
+```{python}
+ 1 + 1
 ```
